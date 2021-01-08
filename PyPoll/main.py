@@ -44,13 +44,15 @@ with open(budgetFile,'r') as csvfile:
             index = candidates.index(row[2])
             candidatesVotes[index] = candidatesVotes[index] + 1
 
+#output to terminal
 print(f'Election Results')
 print(f'-------------------------')
 print(f'Total Votes: {voterCount}')
 print(f'-------------------------')
 count = 0
-winnerVotes = 0
+winnerVotes = 0 #not necessary for this task, but maybe nice to have if it was for something else
 winner = 'None'
+#for all the candidates, caclulate percentage and determine winner
 for run in candidates:
     percent = round((candidatesVotes[count] / voterCount) * 100,5)
     print(f'{run}: {candidatesVotes[count]} ({percent}%)')
