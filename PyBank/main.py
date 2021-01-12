@@ -7,12 +7,12 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 budgetFile = os.path.join(THIS_FOLDER,'Resources','budget_data.csv')
 
 #Set variables
-monthCount = 0
-profLoss = 0
 goodProfLoss = 0
 goodMonth = 'Null'
 badProfLoss = 0
 badMonth = 'Null'
+monthlyChange = 0
+sumMonthlyChange = []
 
 #Open CSV
 with open(budgetFile,'r') as csvfile:
@@ -21,23 +21,36 @@ with open(budgetFile,'r') as csvfile:
     #Skip header
     header = next(csvreader)
 
+    #Set up data
+    firstRow = next(csvreader)
+    monthCount = 1
+    profLoss = float(firstRow[1])
+    lastMonth = float(firstRow[1])
+
     #Check all rows
     for row in csvreader:
         #index to count the months
         monthCount = monthCount + 1
+
         #Calculate total profit/loss
         profLoss = profLoss + float(row[1])
 
+        #Track monthly changes
+        monthlyChange = float(row[1]) - lastMonth
+        sumMonthlyChange.append(monthlyChange)
+        lastMonth = float(row[1])
+
         #if profit/loss is greater/less than current greatest/worst then replace it and store the month
-        if float(row[1]) > goodProfLoss:
-            goodProfLoss = float(row[1])
+        if monthlyChange > goodProfLoss:
+            goodProfLoss = monthlyChange
             goodMonth = row[0]
-        if float(row[1]) < badProfLoss:
-            badProfLoss = float(row[1])
+        if monthlyChange < badProfLoss:
+            badProfLoss = monthlyChange
             badMonth = row[0]
 
 #calculate average
-avProfLoss = profLoss / monthCount
+# avProfLoss = profLoss / monthCount
+avProfLoss = sum(sumMonthlyChange) / len(sumMonthlyChange)
 
 #Print to terminal
 print(f'Financial Analysis')
